@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+    php-cli:
+        image: creativecow/magento-php-cli
+        tty: true
+        restart: on-failure
+        links:
+            - mysql
+            - redis
+    varnish:
+        image: creativecow/magento-varnish
+        restart: on-failure
+        tty: true
+        ports:
+            - 80:80/tcp
+        volumes:
+            - ./build/etc/varnish/default.vcl:/etc/varnish/default.vcl
+        links:
+            - nginx
+    nginx:
+        image: creativecow/magento-nginx
+        restart: on-failure
+        volumes:
+            - ./build/etc/nginx/sites-available/000-default.conf:/etc/nginx/sites-enabled/000-default.conf
+        links:
+            - php-fpm
+    php-fpm:
+        image: creativecow/magento-php-fpm
+        restart: on-failure
+        links:
+            - mysql
+            - redis
+    php-cron:
+        image: creativecow/magento-php-cron
+        restart: on-failure
+        links:
+            - mysql
+            - redis
+    mysql:
+        image: creativecow/magento-mysql
+        restart: on-failure
+        volumes:
+            - mysql:/var/lib/mysql
+    redis:
+        image: creativecow/magento-redis
+        restart: on-failure
+        volumes:
+            - redis:/data
+        privileged: true
+        sysctls:
+            - net.core.somaxconn=1024
+volumes:
+    mysql:
+    redis:
