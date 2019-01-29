@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+    php-cli:
+        build:
+            context: .
+            dockerfile: ./docker/php-cli.dockerfile
+        image: creativecow/magento-php-cli
+    varnish:
+        build:
+            context: .
+            dockerfile: ./docker/varnish.dockerfile
+        image: creativecow/magento-varnish
+    nginx:
+        build:
+            context: .
+            dockerfile: ./docker/nginx.dockerfile
+        image: creativecow/magento-nginx
+    php-fpm:
+        build:
+            context: .
+            dockerfile: ./docker/php-fpm.dockerfile
+        image: creativecow/magento-php-fpm
+    php-cron:
+        build:
+            context: .
+            dockerfile: ./docker/php-cron.dockerfile
+        image: creativecow/magento-php-cron
+        depends_on:
+            - php-cli
+    mysql:
+        build:
+            context: .
+            dockerfile: ./docker/mysql.dockerfile
+        image: creativecow/magento-mysql
+    redis:
+        build:
+            context: .
+            dockerfile: ./docker/redis.dockerfile
+        image: creativecow/magento-redis

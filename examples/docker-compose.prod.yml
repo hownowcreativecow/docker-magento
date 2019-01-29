@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+    php-cli:
+        volumes:
+            - app:/var/www/magento:delegated
+            - media:/var/www/magento/pub/media
+            - cache:/var/www/magento/pub/static/_cache
+            - var:/var/www/magento/var
+    nginx:
+        volumes:
+            - ./build/etc/nginx/magento.d/cache-expiry.conf:/etc/nginx/magento.d/cache-expiry.conf
+            - app:/var/www/magento:cached
+            - media:/var/www/magento/pub/media
+            - cache:/var/www/magento/pub/static/_cache
+            - var:/var/www/magento/var
+    php-fpm:
+        volumes:
+            - app:/var/www/magento:cached
+            - media:/var/www/magento/pub/media
+            - cache:/var/www/magento/pub/static/_cache
+            - var:/var/www/magento/var
+    php-cron:
+        volumes:
+            - app:/var/www/magento:cached
+            - media:/var/www/magento/pub/media
+            - cache:/var/www/magento/pub/static/_cache
+            - var:/var/www/magento/var
+volumes:
+    app:
+    cache:
+    media:
+    var:
