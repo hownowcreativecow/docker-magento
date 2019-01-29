@@ -55,5 +55,11 @@ COPY ./etc/php/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 COPY ./etc/php/php.ini /usr/local/etc/php/conf.d/zz-php.ini
 COPY ./etc/php/php-cli.ini /usr/local/etc/php/conf.d/zz-php-cli.ini
 
+# Fix permissions
+RUN mkdir -p /var/www/magento
+RUN adduser root www-data
+RUN chown -R :www-data /var/www
+
 # Setup container
 WORKDIR /var/www/magento
+USER root:www-data
