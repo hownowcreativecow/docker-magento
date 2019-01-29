@@ -22,7 +22,7 @@ services:
         image: creativecow/magento-nginx
         restart: on-failure
         volumes:
-            - ../etc/nginx/sites-available/000-default.conf:/etc/nginx/sites-enabled/000-default.conf
+            - ../etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./index.php:/var/www/magento/pub/index.php
         links:
             - php-fpm
