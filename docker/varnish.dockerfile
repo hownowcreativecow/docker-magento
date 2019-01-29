@@ -14,10 +14,10 @@ COPY ./etc/varnish/default.vcl /etc/varnish/default.vcl
 
 # Copy entrypoint
 RUN printf "#!/bin/sh\n\
-\n\
 set -e\n\
-\n\
-exec sh -c \"exec varnishd -F -a :${VARNISH_PORT} -s malloc,${VARNISH_MEMORY} -f ${VARNISH_CONFIG} ${VARNISH_PARAMS}\"\n\
+varnishd -a :${VARNISH_PORT} -s malloc,${VARNISH_MEMORY} -f ${VARNISH_CONFIG} ${VARNISH_PARAMS}\n\
+sleep 1\n\
+varnishlog -q \"RespStatus >= 500 or BerespStatus >= 500\"\n\
 " > /docker-entrypoint.sh \
     && chmod +x /docker-entrypoint.sh
 
