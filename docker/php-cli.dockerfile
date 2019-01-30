@@ -55,5 +55,18 @@ COPY ./etc/php/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 COPY ./etc/php/php.ini /usr/local/etc/php/conf.d/zz-php.ini
 COPY ./etc/php/php-cli.ini /usr/local/etc/php/conf.d/zz-php-cli.ini
 
+# Fix permissions
+RUN mkdir -p /var/www/magento
+RUN adduser root www-data
+RUN chown -R :www-data /var/www
+
+# Copy installation files
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer
+COPY ./etc/cli/magento-create-project.sh /usr/local/bin/magento-create-project
+COPY ./etc/cli/magento-fix-permissions.sh /usr/local/bin/magento-fix-permissions
+COPY ./etc/cli/magento-install.sh /usr/local/bin/magento-install
+RUN chmod u+x /usr/local/bin/composer /usr/local/bin/magento-*
+
 # Setup container
 WORKDIR /var/www/magento
+USER root:www-data

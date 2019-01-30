@@ -2,53 +2,65 @@ version: '3.7'
 services:
     php-cli:
         image: creativecow/magento-php-cli
-        tty: true
         restart: on-failure
+        tty: true
+        volumes:
+            - magento:/var/www/magento
+            - media:/var/www/magento/pub/media
         links:
             - mysql
             - redis
     varnish:
         image: creativecow/magento-varnish
-        restart: on-failure
-        tty: true
+        restart: unless-stopped
         ports:
             - 80:80/tcp
         volumes:
-            - ./build/etc/varnish/default.vcl:/etc/varnish/default.vcl
+            - ./etc/varnish/default.vcl:/etc/varnish/default.vcl
         links:
             - nginx
     nginx:
         image: creativecow/magento-nginx
-        restart: on-failure
+        restart: unless-stopped
         volumes:
-            - ./build/etc/nginx/sites-available/000-default.conf:/etc/nginx/sites-enabled/000-default.conf
+            - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - magento:/var/www/magento
+            - media:/var/www/magento/pub/media
         links:
             - php-fpm
     php-fpm:
         image: creativecow/magento-php-fpm
-        restart: on-failure
+        restart: unless-stopped
+        volumes:
+            - magento:/var/www/magento
+            - media:/var/www/magento/pub/media
         links:
             - mysql
             - redis
     php-cron:
         image: creativecow/magento-php-cron
-        restart: on-failure
+        restart: unless-stopped
+        volumes:
+            - magento:/var/www/magento
+            - media:/var/www/magento/pub/media
         links:
             - mysql
             - redis
     mysql:
         image: creativecow/magento-mysql
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - mysql:/var/lib/mysql
     redis:
         image: creativecow/magento-redis
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - redis:/data
         privileged: true
         sysctls:
             - net.core.somaxconn=1024
 volumes:
+    magento:
+    media:
     mysql:
     redis:
