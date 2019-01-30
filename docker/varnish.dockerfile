@@ -15,4 +15,4 @@ COPY ./etc/varnish/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod u+x /usr/local/bin/docker-entrypoint
 
 # Setup container
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
