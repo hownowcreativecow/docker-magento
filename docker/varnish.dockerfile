@@ -11,7 +11,7 @@ RUN apk add --no-cache varnish
 
 # Copy config files
 COPY ./etc/varnish/default.vcl /etc/varnish/default.vcl
-COPY ./etc/varnish/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY ./etc/varnish/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod u+x /usr/local/bin/docker-entrypoint
 
 # Setup container
