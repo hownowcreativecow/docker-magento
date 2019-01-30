@@ -11,24 +11,24 @@ services:
             - redis
     varnish:
         image: creativecow/magento-varnish
-        restart: on-failure
+        restart: unless-stopped
         ports:
             - 80:80/tcp
         volumes:
-            - ../etc/varnish/default.vcl:/etc/varnish/default.vcl
+            - ./etc/varnish/default.vcl:/etc/varnish/default.vcl
         links:
             - nginx
     nginx:
         image: creativecow/magento-nginx
-        restart: on-failure
+        restart: unless-stopped
         volumes:
-            - ../etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./index.php:/var/www/magento/pub/index.php
         links:
             - php-fpm
     php-fpm:
         image: creativecow/magento-php-fpm
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - ./index.php:/var/www/magento/pub/index.php
         links:
@@ -36,7 +36,7 @@ services:
             - redis
     php-cron:
         image: creativecow/magento-php-cron
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - ./index.php:/var/www/magento/pub/index.php
         links:
@@ -44,12 +44,12 @@ services:
             - redis
     mysql:
         image: creativecow/magento-mysql
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - mysql:/var/lib/mysql
     redis:
         image: creativecow/magento-redis
-        restart: on-failure
+        restart: unless-stopped
         volumes:
             - redis:/data
         privileged: true

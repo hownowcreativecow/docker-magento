@@ -11,15 +11,8 @@ RUN apk add --no-cache varnish
 
 # Copy config files
 COPY ./etc/varnish/default.vcl /etc/varnish/default.vcl
-
-# Copy entrypoint
-RUN printf "#!/bin/sh\n\
-set -e\n\
-varnishd -a :${VARNISH_PORT} -s malloc,${VARNISH_MEMORY} -f ${VARNISH_CONFIG} ${VARNISH_PARAMS}\n\
-sleep 1\n\
-varnishlog -q \"RespStatus >= 500 or BerespStatus >= 500\"\n\
-" > /docker-entrypoint.sh \
-    && chmod +x /docker-entrypoint.sh
+COPY ./etc/varnish/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod u+x /usr/local/bin/docker-entrypoint
 
 # Setup container
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
