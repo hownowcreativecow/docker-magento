@@ -1,9 +1,5 @@
 @ECHO OFF
+setlocal
+cd %~dp0.. || exit 1
 
-SET CURRENT_DIR=%cd%
-pushd %~dp0..
-SET APP_DIR=%cd%
-popd
-
-cd %APP_DIR% && docker-compose build
-cd %CURRENT_DIR%
+docker-compose build --no-cache

@@ -1,49 +1,50 @@
 version: '3.7'
 services:
-    php-cli:
-        image: creativecow/magento-php-cli
-        restart: on-failure
-        tty: true
-        volumes:
-            - magento:/var/www/magento
-            - media:/var/www/magento/pub/media
-        links:
-            - mysql
-            - redis
     varnish:
         image: creativecow/magento-varnish
         restart: unless-stopped
         ports:
             - 80:80/tcp
-        volumes:
-            - ./etc/varnish/default.vcl:/etc/varnish/default.vcl
         links:
             - nginx
     nginx:
-        image: creativecow/magento-nginx
+        build:
+            context: .
+            dockerfile: nginx.dockerfile
+        image: creativecow/magento-nginx-test
         restart: unless-stopped
         volumes:
-            - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - magento:/var/www/magento
-            - media:/var/www/magento/pub/media
+            - magento-media:/var/www/magento/pub/media
         links:
             - php-fpm
     php-fpm:
-        image: creativecow/magento-php-fpm
+        build:
+            context: .
+            dockerfile: php-fpm.dockerfile
+        image: creativecow/magento-php-fpm-test
         restart: unless-stopped
         volumes:
-            - magento:/var/www/magento
-            - media:/var/www/magento/pub/media
+            - magento-media:/var/www/magento/pub/media
+            - magento-var:/var/www/magento/var
+        depends_on:
+            - php-build
         links:
+            - elasticsearch
             - mysql
             - redis
     php-cron:
-        image: creativecow/magento-php-cron
+        build:
+            context: .
+            dockerfile: php-cron.dockerfile
+        image: creativecow/magento-php-cron-test
         restart: unless-stopped
         volumes:
-            - magento:/var/www/magento
-            - media:/var/www/magento/pub/media
+            - magento-media:/var/www/magento/pub/media
+            - magento-var:/var/www/magento/var
+        depends_on:
+            - php-build
         links:
+            - elasticsearch
             - mysql
             - redis
     mysql:
@@ -59,8 +60,18 @@ services:
         privileged: true
         sysctls:
             - net.core.somaxconn=1024
+    elasticsearch:
+        image: creativecow/magento-elasticsearch
+        restart: unless-stopped
+        volumes:
+            - elasticsearch:/usr/share/elasticsearch/data
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
 volumes:
-    magento:
-    media:
+    elasticsearch:
+    magento-media:
+    magento-var:
     mysql:
     redis:

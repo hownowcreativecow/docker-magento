@@ -1,11 +1,21 @@
 @ECHO OFF
+setlocal
+cd %~dp0..\test || exit 1
 
-SET CURRENT_DIR=%cd%
-pushd %~dp0..
-SET APP_DIR=%cd%
-popd
+ECHO "Stopping test application"
+CALL docker-compose down
 
-cd %APP_DIR%\test && docker-compose down
-cd %APP_DIR\bin\build.bat
-cd %APP_DIR%\test && docker-compose up -d
-cd %CURRENT_DIR%
+ECHO "Rebuilding base images"
+CALL ..\bin\build.bat
+
+ECHO "Rebuilding test images"
+CALL docker-compose build --no-cache
+
+ECHO "Starting test application"
+docker-compose up -d
+
+ECHO "Waiting for test application to be ready..."
+CALL TIMEOUT /T 5 /NOBREAK
+
+ECHO "Installing magento"
+CALL docker-compose exec php-build magento-development-install

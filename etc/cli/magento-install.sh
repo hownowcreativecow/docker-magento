@@ -1,7 +1,6 @@
 #!/bin/sh
 
 cd /var/www/magento
-magento-fix-permissions
 
 echo "Installing magento"
 bin/magento setup:install\
@@ -29,6 +28,4 @@ bin/magento setup:install\
         --session-save-redis-db=2\
         --cleanup-database
 
-echo "Post install cleanup"
-bin/magento deploy:mode:set developer
-bin/magento cache:clean
+echo "Installation complete"
