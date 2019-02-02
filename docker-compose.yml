@@ -5,6 +5,13 @@ services:
             context: .
             dockerfile: ./docker/php-cli.dockerfile
         image: creativecow/magento-php-cli
+    php-build:
+        build:
+            context: .
+            dockerfile: ./docker/php-build.dockerfile
+        image: creativecow/magento-php-build
+        depends_on:
+            - php-cli
     varnish:
         build:
             context: .
@@ -37,3 +44,8 @@ services:
             context: .
             dockerfile: ./docker/redis.dockerfile
         image: creativecow/magento-redis
+    elasticsearch:
+        build:
+            context: .
+            dockerfile: ./docker/elasticsearch.dockerfile
+        image: creativecow/magento-elasticsearch

@@ -49,6 +49,9 @@ RUN apk add --no-cache autoconf g++ make \
 # Cleanup
 RUN rm -rf /tmp/*
 
+# Create user
+RUN adduser -u 1000 -D -G www-data cli
+
 # Copy config files
 COPY ./etc/php/mail.ini /usr/local/etc/php/conf.d/zz-mail.ini
 COPY ./etc/php/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
@@ -57,16 +60,8 @@ COPY ./etc/php/php-cli.ini /usr/local/etc/php/conf.d/zz-php-cli.ini
 
 # Fix permissions
 RUN mkdir -p /var/www/magento
-RUN adduser root www-data
-RUN chown -R :www-data /var/www
-
-# Copy installation files
-COPY --from=composer /usr/bin/composer /usr/local/bin/composer
-COPY ./etc/cli/magento-create-project.sh /usr/local/bin/magento-create-project
-COPY ./etc/cli/magento-fix-permissions.sh /usr/local/bin/magento-fix-permissions
-COPY ./etc/cli/magento-install.sh /usr/local/bin/magento-install
-RUN chmod u+x /usr/local/bin/composer /usr/local/bin/magento-*
+RUN chown -R cli:www-data /var/www
 
 # Setup container
 WORKDIR /var/www/magento
-USER root:www-data
+USER cli:www-data
