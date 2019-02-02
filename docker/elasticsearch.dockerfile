@@ -12,7 +12,6 @@ COPY ./etc/elasticsearch/elasticsearch.yml /usr/share/java/elasticsearch/config/
 COPY ./etc/elasticsearch/log4j2.properties /usr/share/java/elasticsearch/config/log4j2.properties
 
 # Fix permissions
-RUN mkdir -p /usr/share/java/elasticsearch/config
 RUN mkdir -p /usr/share/java/elasticsearch/data
 RUN mkdir -p /usr/share/java/elasticsearch/logs
 RUN chown -R elasticsearch:elasticsearch /usr/share/java/elasticsearch
