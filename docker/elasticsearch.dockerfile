@@ -8,14 +8,16 @@ RUN addgroup -g 1000 -S elasticsearch \
     && adduser -u 1000 -D -S -G elasticsearch elasticsearch
 
 # Copy config files
-COPY ./etc/elasticsearch/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml.tmp
-RUN cat /usr/share/elasticsearch/config/elasticsearch.yml.tmp >> /usr/share/elasticsearch/config/elasticsearch.yml\
-    && rm -f /usr/share/elasticsearch/config/elasticsearch.yml
+COPY ./etc/elasticsearch/elasticsearch.yml /usr/share/java/elasticsearch/config/elasticsearch.yml
+COPY ./etc/elasticsearch/log4j2.properties /usr/share/java/elasticsearch/config/log4j2.properties
 
 # Fix permissions
-RUN chown -R elasticsearch:elasticsearch /usr/share/elasticsearch
+RUN mkdir -p /usr/share/java/elasticsearch/config
+RUN mkdir -p /usr/share/java/elasticsearch/data
+RUN mkdir -p /usr/share/java/elasticsearch/logs
+RUN chown -R elasticsearch:elasticsearch /usr/share/java/elasticsearch
 
 # Setup container
-WORKDIR /usr/share/elasticsearch
+WORKDIR /usr/share/java/elasticsearch
 USER elasticsearch:elasticsearch
-#CMD ["/usr/share/elasticsearch/bin/elasticsearch"]
+CMD ["/bin/sh", "/usr/share/java/elasticsearch/bin/elasticsearch"]

@@ -8,11 +8,13 @@ services:
         restart: on-failure
         tty: true
         volumes:
-            - composer:/home/cli/.composer
+            - magento-etc:/var/www/magento/app/etc
+            - magento-generated:/var/www/magento/generated
             - magento-media:/var/www/magento/pub/media
-            - magento-var:/var/www/magento/var
+            - magento-static:/var/www/magento/pub/static
+            - magento-var:/var/www/magento/pub/var
         links:
-#            - elasticsearch
+            - elasticsearch
             - mysql
             - redis
     varnish:
@@ -30,6 +32,8 @@ services:
         restart: unless-stopped
         volumes:
             - magento-media:/var/www/magento/pub/media
+            - magento-static:/var/www/magento/pub/static
+            - magento-var:/var/www/magento/pub/var
         links:
             - php-fpm
     php-fpm:
@@ -39,12 +43,15 @@ services:
         image: creativecow/magento-php-fpm-test
         restart: unless-stopped
         volumes:
+            - magento-etc:/var/www/magento/app/etc
+            - magento-generated:/var/www/magento/generated
             - magento-media:/var/www/magento/pub/media
-            - magento-var:/var/www/magento/var
+            - magento-static:/var/www/magento/pub/static
+            - magento-var:/var/www/magento/pub/var
         depends_on:
             - php-build
         links:
-#            - elasticsearch
+            - elasticsearch
             - mysql
             - redis
     php-cron:
@@ -54,12 +61,15 @@ services:
         image: creativecow/magento-php-cron-test
         restart: unless-stopped
         volumes:
+            - magento-etc:/var/www/magento/app/etc
+            - magento-generated:/var/www/magento/generated
             - magento-media:/var/www/magento/pub/media
-            - magento-var:/var/www/magento/var
+            - magento-static:/var/www/magento/pub/static
+            - magento-var:/var/www/magento/pub/var
         depends_on:
             - php-build
         links:
-#            - elasticsearch
+            - elasticsearch
             - mysql
             - redis
     mysql:
@@ -74,20 +84,23 @@ services:
             - redis:/data
         sysctls:
             - net.core.somaxconn=1024
-#    elasticsearch:
-#        image: creativecow/magento-elasticsearch
-#        restart: unless-stopped
-#        tty: true
-#        volumes:
-#            - elasticsearch:/usr/share/elasticsearch/data
-#        ulimits:
-#            memlock:
-#                soft: -1
-#                hard: -1
+    elasticsearch:
+        image: creativecow/magento-elasticsearch
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - elasticsearch:/usr/share/java/elasticsearch/data
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
 volumes:
     composer:
     elasticsearch:
+    magento-etc:
+    magento-generated:
     magento-media:
+    magento-static:
     magento-var:
     mysql:
     redis:
