@@ -12,8 +12,5 @@ bin/magento deploy:mode:set developer
 echo "Clean cache"
 bin/magento cache:flush
 
-magento-compile-assets
-magento-development-fix-permissions
-
 echo "Reindex"
 bin/magento indexer:reindex

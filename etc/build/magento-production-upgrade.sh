@@ -19,8 +19,6 @@ bin/magento setup:upgrade --keep-generated
 echo "Cleaning cache"
 bin/magento cache:clean
 
-magento-production-fix-permissions
-
 echo "Leaving maintenance mode"
 bin/magento maintenance:disable
 
