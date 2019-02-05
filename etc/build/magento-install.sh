@@ -28,4 +28,8 @@ bin/magento setup:install\
         --session-save-redis-db=2\
         --cleanup-database
 
+echo "Setup elasticsearch"
+bin/magento config:set catalog/search/engine elasticsearch5
+bin/magento config:set catalog/search/elasticsearch5_server_hostname elasticsearch
+
 echo "Installation complete"
