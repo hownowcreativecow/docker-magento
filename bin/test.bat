@@ -9,7 +9,7 @@ ECHO "Rebuilding base images"
 CALL ..\bin\build.bat
 
 ECHO "Rebuilding test images"
-CALL docker-compose build
+CALL docker-compose build --no-cache
 
 ECHO "Starting test application"
 docker-compose up -d
