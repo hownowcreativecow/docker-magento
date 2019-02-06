@@ -10,7 +10,7 @@ echo "Set environment in developer mode"
 bin/magento deploy:mode:set developer
 
 echo "Clean cache"
-bin/magento cache:flush
+bin/magento cache:clean
 
 echo "Reindex"
 bin/magento indexer:reindex

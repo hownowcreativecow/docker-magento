@@ -10,7 +10,7 @@ echo "Set environment in production mode"
 bin/magento deploy:mode:set production
 
 echo "Clean cache"
-bin/magento cache:flush
+bin/magento cache:clean
 
 echo "Reindex"
 bin/magento indexer:reindex
