@@ -7,9 +7,6 @@ echo "Beginning production upgrade..."
 echo "Entering maintenance mode"
 bin/magento maintenance:enable
 
-echo "Stopping message queues"
-bin/magento queue:consumers:stop
-
 echo "Importing config"
 bin/magento app:config:import
 
